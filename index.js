@@ -24,8 +24,19 @@ let notes = [
     }
 ]
 
+const phonebookInfo = `<p>Phonebook has info for ${notes.length} people</p>`
+const showCurrentTime = () => {
+    const now = new Date();
+    const dateString = `${now.toString()}`;
+    return `<p>${dateString}</p>`
+}
+
 app.get('/', (req, res) => {
     res.send('<h1>Hello World!</>')
+})
+
+app.get('/info', (req, res) => {
+    res.send(phonebookInfo + showCurrentTime())
 })
 
 app.get('/api/persons', (req, res) => {
