@@ -1,5 +1,6 @@
 const express = require('express')
 const app = express()
+app.use(express.json())
 
 let persons = [
     {
@@ -30,6 +31,14 @@ const showCurrentTime = () => {
     const dateString = `${now.toString()}`;
     return `<p>${dateString}</p>`
 }
+
+app.post('/api/persons', (request, response) => {
+    const id = Math.floor(Math.random() * 10000)
+    const person = request.body
+    person.id = id
+    persons = persons.concat(person)
+    response.json(person)
+})
 
 app.get('/', (req, res) => {
     res.send('<h1>Hello World!</>')
