@@ -1,4 +1,5 @@
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
 app.use(express.json())
 
@@ -33,7 +34,22 @@ const showCurrentTime = () => {
     return `<p>${dateString}</p>`
 }
 
-app.post('/api/persons', (request, response) => {
+// this is logged everytime app is used
+app.use(morgan('tiny'))
+
+// custom morgan token to show name and number json
+morgan.token('req-body', (req) => {
+    output = {
+        name: req.body.name,
+        number: req.body.number
+    }
+    return JSON.stringify(output)
+})
+
+// used in app.post
+const morganOutput = morgan(':method :url :status :response-time ms :res[content-length] :req-body')
+
+app.post('/api/persons', morganOutput, (request, response) => {
     const id = Math.floor(Math.random() * 10000)
     const person = request.body
     person.id = id
