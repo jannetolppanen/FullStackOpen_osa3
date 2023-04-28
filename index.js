@@ -25,6 +25,7 @@ let persons = [
     }
 ]
 
+// /info page 
 const phonebookInfo = `<p>Phonebook has info for ${persons.length} people</p>`
 const showCurrentTime = () => {
     const now = new Date();
@@ -36,6 +37,34 @@ app.post('/api/persons', (request, response) => {
     const id = Math.floor(Math.random() * 10000)
     const person = request.body
     person.id = id
+
+    // error if no name
+    if (!person.name) {
+        console.log('error: "name missing"')
+        return response.status(400).json({
+            error: "name missing"
+        })
+    }
+    //error if no number
+    if (!person.number) {
+        console.log('error: "number missing"')
+        return response.status(400).json({
+            error: "number missing"
+        })
+    }
+    // check persons for duplicate names, retun true if duplicate
+    function nameFilter() {
+        return persons.some(p => p.name.toLocaleLowerCase() === person.name.toLocaleLowerCase())
+    }
+
+    if (nameFilter()) {
+        console.log('error: "Duplicate name"')
+        return response.status(400).json({
+            error: "name must be unique"
+        })
+    }
+
+    // if checks pass, add person
     persons = persons.concat(person)
     response.json(person)
 })
