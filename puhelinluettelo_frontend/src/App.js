@@ -161,7 +161,7 @@ const App = () => {
     let confirm = window.confirm('Are you sure you want to delete this item?')
     if (confirm) {
       axios
-        .delete(`http://localhost:3001/persons/${id}`)
+        .delete(`http://localhost:3001/api/persons/${id}`)
         .then(response => {
           setPersons(persons.filter(person => person.id !== id))
           createNotificationMessage("Deleted", "red", removedPersonsName)
