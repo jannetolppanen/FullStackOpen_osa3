@@ -126,7 +126,7 @@ const App = () => {
         
         const updatedPerson = {...personToUpdate, number: personObject.number}
         
-        axios.put(`http://localhost:3001/persons/${personToUpdateId}`, updatedPerson)
+        axios.put(`/api/persons/${personToUpdateId}`, updatedPerson)
         .then(response => {
           setPersons(persons.map(person => person.id !== personToUpdateId ? person : response.data))
           setNewName("")
@@ -161,7 +161,7 @@ const App = () => {
     let confirm = window.confirm('Are you sure you want to delete this item?')
     if (confirm) {
       axios
-        .delete(`http://localhost:3001/api/persons/${id}`)
+        .delete(`/api/persons/${id}`)
         .then(response => {
           setPersons(persons.filter(person => person.id !== id))
           createNotificationMessage("Deleted", "red", removedPersonsName)
