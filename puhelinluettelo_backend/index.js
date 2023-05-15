@@ -29,7 +29,8 @@ const errorHandler = (error, request, response, next) => {
     if (error.name === 'CastError') {
         return response.status(400).send({ error: 'malformatted id' })
     }
-    next(error)}
+    next(error)
+}
 
 
 // this is logged everytime app is used
@@ -99,14 +100,14 @@ app.get('/', (req, res) => {
 // .catch toimii vasta jos annetaan kokonaan vääräntyyppinen id 
 app.get('/api/persons/:id', (request, response, next) => {
     Person.findById(request.params.id)
-    .then(person => {
-        if (person) {
-            response.json(person)
-        } else {
-            response.status(404).end()
-        }
-    })
-    .catch(error => next(error))
+        .then(person => {
+            if (person) {
+                response.json(person)
+            } else {
+                response.status(404).end()
+            }
+        })
+        .catch(error => next(error))
 })
 
 app.get('/info', (req, res) => {
@@ -117,7 +118,27 @@ app.get('/api/persons', (request, result, next) => {
     Person.find({}).then(persons => {
         result.json(persons)
     })
+        .catch(error => next(error))
+})
+
+app.put('/api/persons/:id', (request, response, next) => {
+    console.log('app put')
+    const body = request.body
+
+    const person = {
+        name: body.name,
+        number: body.number
+    }
+
+    Person.findByIdAndUpdate(request.params.id, person, { new: true })
+    .then(updatedPerson => {
+        response.json(updatedPerson)
+    })
     .catch(error => next(error))
+})
+
+app.put('/info', (req, res) => {
+    console.log('yes')
 })
 
 app.delete('/api/persons/:id', (request, response, next) => {

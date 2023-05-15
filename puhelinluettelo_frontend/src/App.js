@@ -135,7 +135,7 @@ const App = () => {
         })
         // Jos muutetaan numeroa henkilöltä joka on poistettu
         .catch(error => {
-          createNotificationMessage("there was no record of user", "maroon", personNameToUpdate)
+          createNotificationMessage("there was no record of user ", "maroon", personNameToUpdate)
           setPersons(persons.filter(person => person.id !== personToUpdateId))
         })
       } else {
