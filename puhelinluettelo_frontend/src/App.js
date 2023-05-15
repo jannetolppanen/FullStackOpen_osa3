@@ -62,7 +62,7 @@ const Add = ({ AddPerson, newName, handlePersonChange, newNumber, handleNumberCh
 const RemoveButton = ({ id, removePerson }) => {
   return (
     <>
-      <button onClick={() => removePerson(id)}>remove {id} </button>
+      <button onClick={() => removePerson(id)}>remove</button>
     </>
   )
 }

@@ -15,7 +15,6 @@ app.use(express.static('build'))
 
 
 // /info page 
-const phonebookInfo = `<p>Phonebook has info for $ {persons.length} people</p>`
 const showCurrentTime = () => {
     const now = new Date();
     const dateString = `${now.toString()}`;
@@ -31,7 +30,6 @@ const errorHandler = (error, request, response, next) => {
     }
     next(error)
 }
-
 
 // this is logged everytime app is used
 app.use(morgan('tiny'))
@@ -65,19 +63,6 @@ app.post('/api/persons', morganOutput, (request, response, next) => {
             error: "number missing"
         })
     }
-    // check persons for duplicate names, retun true if duplicate
-    // function nameFilter() {
-    //     return persons.some(p => p.name.toLocaleLowerCase() === person.name.toLocaleLowerCase())
-    // }
-
-    // if (nameFilter()) {
-    //     console.log('error: "Duplicate name"')
-    //     return response.status(400).json({
-    //         error: "name must be unique"
-    //     })
-    // }
-
-    // if checks pass, add person
 
     const person = new Person({
         name: body.name,
@@ -110,8 +95,12 @@ app.get('/api/persons/:id', (request, response, next) => {
         .catch(error => next(error))
 })
 
-app.get('/info', (req, res) => {
-    res.send(phonebookInfo + showCurrentTime())
+app.get('/info', (request, response) => {
+    Person.countDocuments({})
+    .then(count => {
+        response.send(`<p>Phonebook has info for ${count} people</p>` + showCurrentTime())
+    })
+    .catch(error => next(error))
 })
 
 app.get('/api/persons', (request, result, next) => {
@@ -122,7 +111,6 @@ app.get('/api/persons', (request, result, next) => {
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
-    console.log('app put')
     const body = request.body
 
     const person = {
@@ -135,10 +123,6 @@ app.put('/api/persons/:id', (request, response, next) => {
         response.json(updatedPerson)
     })
     .catch(error => next(error))
-})
-
-app.put('/info', (req, res) => {
-    console.log('yes')
 })
 
 app.delete('/api/persons/:id', (request, response, next) => {
