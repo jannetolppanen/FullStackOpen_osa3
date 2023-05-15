@@ -22,6 +22,16 @@ const showCurrentTime = () => {
     return `<p>${dateString}</p>`
 }
 
+// Virheenkäsittely middleware
+const errorHandler = (error, request, response, next) => {
+    console.log('ERROR HANDLER KUTSUTTU')
+    console.log(error.message)
+    if (error.name === 'CastError') {
+        return response.status(400).send({ error: 'malformatted id' })
+    }
+    next(error)}
+
+
 // this is logged everytime app is used
 app.use(morgan('tiny'))
 
@@ -37,7 +47,7 @@ morgan.token('req-body', (req) => {
 // used in app.post
 const morganOutput = morgan(':method :url :status :response-time ms :res[content-length] :req-body')
 
-app.post('/api/persons', morganOutput, (request, response) => {
+app.post('/api/persons', morganOutput, (request, response, next) => {
     const body = request.body
 
     // error if no name
@@ -78,22 +88,25 @@ app.post('/api/persons', morganOutput, (request, response) => {
         .then(savedPerson => {
             response.json(savedPerson)
         })
+        .catch(error => next(error))
 })
 
 app.get('/', (req, res) => {
     res.send('<h1>Hello World!</>')
 })
 
-app.get('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    const person = persons.find(person => person.id === id)
-
-    if (person) {
-        response.json(person)
-    } else {
-        response.status(404).end()
-    }
-
+// if-else tarkastaa onko oikean tyyppinen id olemassa ja herjaa jos oikeanlainen id on annettu mutta sitä ei löydy. 
+// .catch toimii vasta jos annetaan kokonaan vääräntyyppinen id 
+app.get('/api/persons/:id', (request, response, next) => {
+    Person.findById(request.params.id)
+    .then(person => {
+        if (person) {
+            response.json(person)
+        } else {
+            response.status(404).end()
+        }
+    })
+    .catch(error => next(error))
 })
 
 app.get('/info', (req, res) => {
@@ -106,12 +119,15 @@ app.get('/api/persons', (req, res) => {
     })
 })
 
-app.delete('/api/persons/:id', (request, response) => {
+app.delete('/api/persons/:id', (request, response, next) => {
     Person.findByIdAndRemove(request.params.id)
-    .then(result => {
-        response.status(204).end()
-    })
+        .then(result => {
+            response.status(204).end()
+        })
+        .catch(error => next(error))
 })
+// Otetaan käyttöön virheenkäsittely middleware
+app.use(errorHandler)
 
 const PORT = process.env.PORT
 app.listen(PORT)
