@@ -1,0 +1,5 @@
+Everytime you change to a new computer, remember to add a .env file that has the mongodb uri and port.
+Also change the address to the correct database if youre copy/pasting from atlasdb.
+
+MONGODB_URI=mongodb+srv://janne:<password>@cluster0.qrchvix.mongodb.net/puhelinluettelo?retryWrites=true&w=majority
+PORT=3001
