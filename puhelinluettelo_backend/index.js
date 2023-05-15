@@ -4,33 +4,15 @@ const cors = require('cors')
 const app = express()
 require('dotenv').config()
 const Person = require('./models/person')
+
+// Käyttöön json-parser. Ilman tätä postia tehdessä request.body olisi undefined
 app.use(express.json())
+
 app.use(cors())
+
+// Tarkastaa build kansion juuressa ja tarjoaa pyydetyn tiedoston sieltä, jos sieltä sen niminen tiedosto löytyy
 app.use(express.static('build'))
 
-
-let persons = [
-    {
-        id: 1,
-        name: 'Arto Hellas',
-        number: '040-123456'
-    },
-    {
-        id: 2,
-        name: 'Emma Johnson',
-        number: '050-987654'
-    },
-    {
-        id: 3,
-        name: 'Juan Martinez',
-        number: '555-5555'
-    },
-    {
-        id: 4,
-        name: 'Aya Nakamura',
-        number: '123-456-7890'
-    }
-]
 
 // /info page 
 const phonebookInfo = `<p>Phonebook has info for $ {persons.length} people</p>`
