@@ -113,10 +113,11 @@ app.get('/info', (req, res) => {
     res.send(phonebookInfo + showCurrentTime())
 })
 
-app.get('/api/persons', (req, res) => {
+app.get('/api/persons', (request, result, next) => {
     Person.find({}).then(persons => {
-        res.json(persons)
+        result.json(persons)
     })
+    .catch(error => next(error))
 })
 
 app.delete('/api/persons/:id', (request, response, next) => {
