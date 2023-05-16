@@ -47,27 +47,12 @@ morgan.token('req-body', (req) => {
 const morganOutput = morgan(':method :url :status :response-time ms :res[content-length] :req-body')
 
 app.post('/api/persons', morganOutput, (request, response, next) => {
-    const body = request.body
+    // const body = request.body
+    const { name, number } = request.body
 
-    // error if no name
-    if (!body.name) {
-        console.log('error: "name missing"')
-        return response.status(400).json({
-            error: "name missing"
-        })
-    }
-    //error if no number
-    if (!body.number) {
-        console.log('error: "number missing"')
-        return response.status(400).json({
-            error: "number missing"
-        })
-    }
-
-    const person = new Person({
-        name: body.name,
-        number: body.number,
-    })
+    const person = new Person(
+        { name, number }
+    )
 
     person
         .save()

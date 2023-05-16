@@ -97,7 +97,7 @@ const App = () => {
 
   const createNotificationMessage = (text, color, name) => {
     setTextAndCss({
-      text: `${text} ${name}`,
+      text: `${text} ${name || ""}`,
       css: color
 
     })
@@ -150,8 +150,10 @@ const App = () => {
           setNewName('')
           setNewNumber('')
           createNotificationMessage("Added", "green", returnedPerson.name)
-
         })
+        .catch(error => {
+          createNotificationMessage(error.message, "red")
+        });
     }
   }
   // Lähetetään deletepyyntö id:n kanssa ja päivitetään persons listalla joka ei sisällä kyseistä id:tä
