@@ -71,7 +71,7 @@ const App = () => {
   // Tallennetaan tänne persons json
   const [persons, setPersons] = useState([])
   const [TextAndCss, setTextAndCss] = useState({
-    text : "",
+    text: "",
     css: ""
   })
 
@@ -103,7 +103,7 @@ const App = () => {
     })
     setTimeout(() => {
       setTextAndCss({
-        text: "", 
+        text: "",
         css: ""
       })
     }, 5000)
@@ -123,25 +123,25 @@ const App = () => {
         const personNameToUpdate = personObject.name
         const personToUpdate = persons.find(person => person.name.toLocaleLowerCase() === personNameToUpdate.toLocaleLowerCase())
         const personToUpdateId = personToUpdate.id
-        
-        const updatedPerson = {...personToUpdate, number: personObject.number}
-        
+
+        const updatedPerson = { ...personToUpdate, number: personObject.number }
+
         axios.put(`/api/persons/${personToUpdateId}`, updatedPerson)
-        .then(response => {
-          setPersons(persons.map(person => person.id !== personToUpdateId ? person : response.data))
-          setNewName("")
-          setNewNumber("")
-          createNotificationMessage("changed the number of", "purple", updatedPerson.name)
-        })
-        // Jos muutetaan numeroa henkilöltä joka on poistettu
-        .catch(error => {
-          createNotificationMessage("there was no record of user ", "maroon", personNameToUpdate)
-          setPersons(persons.filter(person => person.id !== personToUpdateId))
-        })
+          .then(response => {
+            setPersons(persons.map(person => person.id !== personToUpdateId ? person : response.data))
+            setNewName("")
+            setNewNumber("")
+            createNotificationMessage("changed the number of", "purple", updatedPerson.name)
+          })
+          // Jos muutetaan numeroa henkilöltä joka on poistettu
+          .catch(error => {
+            createNotificationMessage("there was no record of user ", "maroon", personNameToUpdate)
+            setPersons(persons.filter(person => person.id !== personToUpdateId))
+          })
       } else {
         console.log('User did not want to update the number')
       }
-      }
+    }
     else {
       personService
         .create(personObject)

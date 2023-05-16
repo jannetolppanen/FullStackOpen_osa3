@@ -13,21 +13,20 @@ app.use(cors())
 // Tarkastaa build kansion juuressa ja tarjoaa pyydetyn tiedoston sieltä, jos sieltä sen niminen tiedosto löytyy
 app.use(express.static('build'))
 
-
-// /info page 
+// /info page
 const showCurrentTime = () => {
-    const now = new Date();
-    const dateString = `${now.toString()}`;
+    const now = new Date()
+    const dateString = `${now.toString()}`
     return `<p>${dateString}</p>`
 }
 
 // Virheenkäsittely middleware
 const errorHandler = (error, request, response, next) => {
-    console.log('ERROR HANDLER KUTSUTTU')
+    console.log('$ Error handler called $ ')
     if (error.name === 'CastError') {
         return response.status(400).send({ error: 'malformatted id' })
     } else if (error.name === 'ValidationError') {
-        return response.status(400).send({ error : "Name needs to atleast 3 letters. Number needs to be atleast 8 digits and start with 2 or 3 digits followed by - symbol"})
+        return response.status(400).send({ error : 'Name needs to atleast 3 letters. Number needs to be atleast 8 digits and start with 2 or 3 digits followed by - symbol' })
     }
     next(error)
 }
@@ -37,7 +36,7 @@ app.use(morgan('tiny'))
 
 // custom morgan token to show name and number json
 morgan.token('req-body', (req) => {
-    output = {
+    const output = {
         name: req.body.name,
         number: req.body.number
     }
@@ -69,8 +68,8 @@ app.get('/', (req, res) => {
     res.send('<h1>Hello World!</>')
 })
 
-// if-else tarkastaa onko oikean tyyppinen id olemassa ja herjaa jos oikeanlainen id on annettu mutta sitä ei löydy. 
-// .catch toimii vasta jos annetaan kokonaan vääräntyyppinen id 
+// if-else tarkastaa onko oikean tyyppinen id olemassa ja herjaa jos oikeanlainen id on annettu mutta sitä ei löydy.
+// .catch toimii vasta jos annetaan kokonaan vääräntyyppinen id
 app.get('/api/persons/:id', (request, response, next) => {
     Person.findById(request.params.id)
         .then(person => {
@@ -83,12 +82,12 @@ app.get('/api/persons/:id', (request, response, next) => {
         .catch(error => next(error))
 })
 
-app.get('/info', (request, response) => {
+app.get('/info', (request, response, next) => {
     Person.countDocuments({})
-    .then(count => {
-        response.send(`<p>Phonebook has info for ${count} people</p>` + showCurrentTime())
-    })
-    .catch(error => next(error))
+        .then(count => {
+            response.send(`<p>Phonebook has info for ${count} people</p>` + showCurrentTime())
+        })
+        .catch(error => next(error))
 })
 
 app.get('/api/persons', (request, result, next) => {
@@ -107,10 +106,10 @@ app.put('/api/persons/:id', (request, response, next) => {
     }
 
     Person.findByIdAndUpdate(request.params.id, person, { new: true })
-    .then(updatedPerson => {
-        response.json(updatedPerson)
-    })
-    .catch(error => next(error))
+        .then(updatedPerson => {
+            response.json(updatedPerson)
+        })
+        .catch(error => next(error))
 })
 
 app.delete('/api/persons/:id', (request, response, next) => {
