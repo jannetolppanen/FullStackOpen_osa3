@@ -1,3 +1,4 @@
+import React from 'react'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import personService from './services/persons'
@@ -71,8 +72,8 @@ const App = () => {
   // Tallennetaan tänne persons json
   const [persons, setPersons] = useState([])
   const [TextAndCss, setTextAndCss] = useState({
-    text: "",
-    css: ""
+    text: '',
+    css: ''
   })
 
   // Haetaan nimilista ensimmmäisen kerran
@@ -92,19 +93,19 @@ const App = () => {
   // Haetaan id perusteella personsista nimeä. Jos nimi löytyy palautetaan nimi, jos ei löydy palautetaan tyhjä stringi
   const getNameById = (id) => {
     const person = persons.find((person) => person.id === id)
-    return person ? person.name : ""
+    return person ? person.name : ''
   }
 
   const createNotificationMessage = (text, color, name) => {
     setTextAndCss({
-      text: `${text} ${name || ""}`,
+      text: `${text} ${name || ''}`,
       css: color
 
     })
     setTimeout(() => {
       setTextAndCss({
-        text: "",
-        css: ""
+        text: '',
+        css: ''
       })
     }, 5000)
   }
@@ -119,7 +120,7 @@ const App = () => {
     // Tarkastetaan onko puhelinluettelossa jo saman niminen
     // Jos on, kysytään halutaanko muuttaa numeroa
     if (persons.some(person => person.name.toLocaleLowerCase() === personObject.name.toLocaleLowerCase())) {
-      if (window.confirm(`Do you want to update the number?`)) {
+      if (window.confirm('Do you want to update the number?')) {
         const personNameToUpdate = personObject.name
         const personToUpdate = persons.find(person => person.name.toLocaleLowerCase() === personNameToUpdate.toLocaleLowerCase())
         const personToUpdateId = personToUpdate.id
@@ -129,13 +130,13 @@ const App = () => {
         axios.put(`/api/persons/${personToUpdateId}`, updatedPerson)
           .then(response => {
             setPersons(persons.map(person => person.id !== personToUpdateId ? person : response.data))
-            setNewName("")
-            setNewNumber("")
-            createNotificationMessage("changed the number of", "purple", updatedPerson.name)
+            setNewName('')
+            setNewNumber('')
+            createNotificationMessage('changed the number of', 'purple', updatedPerson.name)
           })
           // Jos muutetaan numeroa henkilöltä joka on poistettu
-          .catch(error => {
-            createNotificationMessage("there was no record of user ", "maroon", personNameToUpdate)
+          .catch(() => {
+            createNotificationMessage('there was no record of user ', 'maroon', personNameToUpdate)
             setPersons(persons.filter(person => person.id !== personToUpdateId))
           })
       } else {
@@ -149,12 +150,12 @@ const App = () => {
           setPersons(persons.concat(returnedPerson))
           setNewName('')
           setNewNumber('')
-          createNotificationMessage("Added", "green", returnedPerson.name)
+          createNotificationMessage('Added', 'green', returnedPerson.name)
         })
         .catch(error => {
-          createNotificationMessage(error.response.data.error, "red")
+          createNotificationMessage(error.response.data.error, 'red')
           console.log(error.response.data)
-        });
+        })
     }
   }
   // Lähetetään deletepyyntö id:n kanssa ja päivitetään persons listalla joka ei sisällä kyseistä id:tä
@@ -165,9 +166,9 @@ const App = () => {
     if (confirm) {
       axios
         .delete(`/api/persons/${id}`)
-        .then(response => {
+        .then(() => {
           setPersons(persons.filter(person => person.id !== id))
-          createNotificationMessage("Deleted", "red", removedPersonsName)
+          createNotificationMessage('Deleted', 'red', removedPersonsName)
         })
     }
   }
