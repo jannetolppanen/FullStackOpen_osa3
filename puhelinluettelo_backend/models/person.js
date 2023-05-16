@@ -17,9 +17,19 @@ mongoose.connect(url)
     name: {
       type: String,
       minlength: 3,
-      required: true
+      required: true,
     },
-    number: String,
+    number: {
+      type: String,
+      validate: {
+        validator: function(value) {
+          // ##-###### tai ###-##### kelpaa, eli 2-3 ennen - merkkiä ja yhteensä 8
+          return /^\d{2}-\d{6,}$/.test(value) || /^\d{3}-\d{5,}$/.test(value);
+        },
+        message: 'Number needs to be 8 digits long, start with 2-3 digits followed by - sign'
+      }
+
+    },
 })
 
 personSchema.set('toJSON', {

@@ -152,7 +152,8 @@ const App = () => {
           createNotificationMessage("Added", "green", returnedPerson.name)
         })
         .catch(error => {
-          createNotificationMessage(error.message, "red")
+          createNotificationMessage(error.response.data.error, "red")
+          console.log(error.response.data)
         });
     }
   }

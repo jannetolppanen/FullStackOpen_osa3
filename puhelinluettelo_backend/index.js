@@ -24,9 +24,10 @@ const showCurrentTime = () => {
 // Virheenkäsittely middleware
 const errorHandler = (error, request, response, next) => {
     console.log('ERROR HANDLER KUTSUTTU')
-    console.log(error.message)
     if (error.name === 'CastError') {
         return response.status(400).send({ error: 'malformatted id' })
+    } else if (error.name === 'ValidationError') {
+        return response.status(400).send({ error : "Name needs to atleast 3 letters. Number needs to be atleast 8 digits and start with 2 or 3 digits followed by - symbol"})
     }
     next(error)
 }
@@ -59,7 +60,9 @@ app.post('/api/persons', morganOutput, (request, response, next) => {
         .then(savedPerson => {
             response.json(savedPerson)
         })
-        .catch(error => next(error))
+        .catch(error => {
+            next(error)
+        })
 })
 
 app.get('/', (req, res) => {
